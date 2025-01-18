@@ -288,4 +288,15 @@ export class PlayPauseAction extends DefaultAction<PlayPauseAction> {
     onDialRotate({context, payload: {settings, ticks}}: DialRotateEvent) {
         this.ticks += ticks;
     }
+ 
+
+    @SDOnActionEvent('TouchTap')
+    onTouchTap({context, payload: {settings}}: TouchTapEvent<PlayPauseSettings>) {
+        this.rest.playPause().catch(reason => {
+            console.error(reason);
+            this.plugin.logMessage(`Error while playPause toggle. context: ${JSON.stringify(context)}, error: ${JSON.stringify(reason)}`);
+            this.plugin.showAlert(context)
+        });
+        this.plugin.setState(this.trackState === TrackState.PLAYING ? StateType.ON : StateType.OFF, context);
+   }
 }
